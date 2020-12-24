@@ -26,9 +26,9 @@ if (!isset($_SESSION["logged"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FurWorks</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/ratlab-3/style/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <script src="/script.js"></script>
+    <script src="/ratlab-3/script.js"></script>
 </head>
 
 <body>
