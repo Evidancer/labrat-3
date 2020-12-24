@@ -1,0 +1,235 @@
+@import url("reset.css");
+
+*{
+    box-sizing: border-box;
+}
+
+html{
+    height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    background-color: #e7e7e7; 
+    background-image: url("/FurWorks/pics/main_bg.png");
+    height: 100%;
+    width: 100%;
+}
+
+
+
+
+.header{
+    /* Что-то получше вы */
+    height: 24vh;
+    min-height: 128px;
+    display:flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    align-items: center;
+    background: url("/FurWorks/pics/lily_bg.svg") repeat top center, linear-gradient(#534865, #67597D);
+    background-size: 43px auto, auto auto;
+}
+
+
+.logo{
+    width: 80%;
+    height: 100%;
+    max-width: 770px;
+    background: url("/FurWorks/pics/logo.png") no-repeat;
+    background-position: center center;
+    background-size: contain;
+}
+
+.nav{
+    display: block;
+    background: linear-gradient( #6B4D88,#31125F);
+    width: 100%;
+}
+
+.nav-list{
+    display: flex;
+    justify-content: center;
+    flex-flow: row nowrap;
+
+}
+
+.nav-link{
+    display: block;
+    color: white;
+    padding: 14px 30px;
+    transition: background-image 1s;
+}
+
+.nav-link:hover{
+    background-image: linear-gradient( #F7D0FF,#31125F);
+}
+
+.nav-link a{
+    text-decoration: none;
+}
+
+.nav-link a:link{
+    color: white;
+}
+
+.nav-link a:visited{
+    color: white;
+}
+
+.nav-link a:hover{
+    color: white;
+}
+
+.nav-link a:active{
+    color: #CAA5F0;
+}
+
+.wrap{
+    display: flex;
+    justify-content: center;
+}
+
+.content{
+    padding: 30px;
+    font-size: 1.2em;
+    background-color: white;
+    width: 65%;
+    min-width: 600px;
+    -webkit-box-shadow: 0px 5px 15px 0px rgba(0,0,0,0.61); 
+    box-shadow: 0px 5px 15px 0px rgba(0,0,0,0.61);
+    min-height: 600px;
+}
+
+
+
+.content h1{
+    font-size: 1.5em;
+    text-align: center;
+    border-bottom: 2px solid #422371;
+    margin-bottom: 20px;
+}
+
+.content h2{
+    font-size: 1.25em;
+    border-top: 1px solid #422371;
+    border-bottom: 1px solid #422371;
+    margin-bottom: 10px;
+    margin-top: 20px;
+}
+
+.content h3{
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.content p{
+    margin-bottom: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.footer{
+
+    height: 14vh;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background: url("/FurWorks/pics/lily_bg.svg") repeat top center, linear-gradient(#361D5C, #422371);
+    background-size: 43px auto, auto auto;
+}
+
+.footer-content{
+    color: white;
+}
+
+
+
+
+
+
+
+
+/*              Для catalog.php               */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*            Для reg.php            */
+
+.reg-wrap{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.reg{
+    background: white;
+    border: 2px solid rgb(56, 29, 61);
+    border-radius: 10px;
+    width: 300px;
+}
+
+.reg-form{
+    display: flex;
+    flex-flow: column nowrap;
+    padding: 20px;
+}
+
+.reg-header{
+    text-align: center;
+    font-size: 1.5em;
+}
+
+.reg-form input{
+    margin: 4px 3px;
+}
+
+.wrongpass{
+    font-size: 0.8em;
+    color: red;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
