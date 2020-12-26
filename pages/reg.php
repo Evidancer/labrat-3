@@ -1,5 +1,23 @@
 <?php
 
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION["logged"])) {
+
+    $_SESSION["logged"] = true;
+
+    $sql = mysqli_connect("localhost", "root");
+    $sql->query("USE furworks");
+
+    $today = date("Y-m-d H:i:s");
+
+    $sql->query("INSERT INTO sessions SET client_ip='" . $_SERVER["REMOTE_ADDR"] . "', start_time='" . $today . "'");
+    $sql->close();
+}
+
+
 $err = "";
 
 if (
@@ -27,8 +45,10 @@ if (
         $err .= "Логин должен быть не меньше 3-х символов и не больше 30";
     } else {
         $query = $sql->query("SELECT * FROM users WHERE login='" . $login . "'");
-        if ($query->fetch_row()[0] != "") {
+        $res = $query->fetch_row();
+        if ($res[0] != "") {
             $err .= "Логин занят.";
+            var_dump($res);
         } else {
             $sql->query("INSERT INTO users SET login='" . $login . "', email='" . $email . "', pass='" . $pass . "';");
             setcookie("userlogin", $login, time() + 60);
@@ -48,7 +68,7 @@ if (
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FurWorks - Регестрация</title>
-    <script src="/FurWorks/script/script.js"></script>
+    <script src="/FurWorks/script.js"></script>
     <link rel="stylesheet" href="/FurWorks/style/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 </head>
@@ -72,6 +92,13 @@ if (
                 <input class="subreg" type="button" value="Зарегистрироваться">
             </form>
             <script>
+                function validateEmail(email) {
+                    var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+                    return reg.test(String(email).toLowerCase());
+                }
+
+
+
                 var letsgo = false;
                 $(".passcheck").on('input', function() {
                     if ($(".userpass").val() != $(".passcheck").val()) {
@@ -86,8 +113,9 @@ if (
                     event.preventDefault();
                     if ($(".username").val() == '' ||
                         $(".useremail").val() == '' ||
-                        $(".userpass").val() == '') {
-                        $(".wrongpass").text("Не все поля заполнены");
+                        $(".userpass").val() == '' ||
+                        !validateEmail($(".useremail").val())) {
+                        $(".wrongpass").text("Не все поля заполнены правильно!");
                     } else
                     if (letsgo) {
                         $(".reg-form").submit();

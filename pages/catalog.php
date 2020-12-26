@@ -2,6 +2,8 @@
 
 require_once('header.php');
 
+$_SESSION['cur_page'] = 'catalog';
+setcookie("cur_page", 'catalog', time() + 3600);
 ?>
 
 <h1>Добро пожаловать в Каталог</h1>
@@ -19,6 +21,148 @@ require_once('header.php');
 <script>
     var jsonData;
 
+
+    function checkOrders() {
+        $.ajax({
+            type: "POST",
+            url: "catalog_handler.php",
+            data: {
+                getorders: true
+            },
+            success: function(response) {
+                var orders = JSON.parse(response);
+                console.log(orders);
+                document.getElementById("goods").innerHTML = "";
+                for (let i = 0; i < orders.length; ++i) {
+                    $(".goods").append($("<div class='order order" + i + "'>"), {});
+                    $(".order" + i + "").append($("<div>ID заказа: " + orders[i][0].id + "</div>"), {});
+                    $(".order" + i + "").append($("<div>Дата заказа: " + orders[i][0].time + "</div>"), {});
+                    $(".order" + i + "").append($("<div>ID товар: " + orders[i][0].amount + "</div>"), {});
+                    $(".order" + i + "").append($("<div>Объем заказа:" + orders[i][0].amount + "</div>"), {});
+                    $(".order" + i + "").append($("<div>Адрес доставки: " + orders[i][0].adress + "</div>"), {});
+                    $(".order" + i + "").append($("<div>Телефон заказчика: " + orders[i][0].id + "</div>"), {});
+                    $(".order" + i + "").append($("<div>Имя заказчика: " + orders[i][1].name + "</div>"), {});
+
+                }
+            }
+
+        })
+
+    }
+
+
+
+
+    function createGood() {
+        $(".goods").empty();
+        $(".goods").append($("<div class='full-size'>"), {})
+        $(".full-size").append($("<button class='back' onclick='getList()'>Назад</button>"))
+        $(".full-size").append($("<div>Название товара</div>"), {});
+        $(".full-size").append($("<input type='text' class='goodname'>"), {});
+        $(".full-size").append($("<div>Название картинки</div>"), {});
+        $(".full-size").append($("<input type='text' class='picname'>"), {});
+        $("full-size").append($("<input type='file' value='Pfadf'>"))
+        $(".full-size").append($("<div>Описание</div>"), {});
+        $(".full-size").append($("<textarea class='gooddesc'></textarea>"), {});
+        $(".full-size").append($("<div>Цена</div>"), {});
+        $(".full-size").append($("<input type='number' class='goodprice'>"), {});
+        $(".full-size").append($("<div>Наличие</div>"), {});
+        $(".full-size").append($("<input type='checkbox' class='goodavail'>"), {});
+        $(".full-size").append($("<button onclick='submitCreation()' class='good-btn'>Создать</button>"));
+    }
+
+
+    function submitCreation() {
+
+        if ($(".goodname").val() != undefined &&
+            $(".picname").val() != undefined &&
+            $(".gooddesc").val() != undefined &&
+            $(".goodprice").val() != undefined &&
+            $(".goodavail").is(":checked") != undefined) {
+
+            $.ajax({
+                type: "POST",
+                url: "catalog_handler.php",
+                data: {
+                    cgname: $(".goodname").val(),
+                    cgpic: $(".picname").val(),
+                    cgdesc: $(".gooddesc").val(),
+                    cgprice: $(".goodprice").val(),
+                    cgavail: $(".goodavail").is(':checked'),
+                },
+                success: function(response) {
+                    console.log(response);
+                    $(".good-btn").text('Успех');
+                    window.location.href = 'catalog.php';
+                }
+            });
+        } else {
+            $(".good-btn").text('Заполните все поля!');
+        }
+
+    }
+
+
+    function editGood(data) {
+        console.log(data);
+
+        $(".goods").empty();
+        $(".goods").append($("<div class='full-size'>"), {})
+        $(".full-size").append($("<button class='back' onclick='getList()'>Назад</button>"))
+
+        $(".full-size").append($("<div>Название товара</div>"), {});
+        $(".full-size").append($("<input type='text' class='goodname'>"), {});
+        $(".goodname").val(jsonData[data].lable);
+        $(".full-size").append($("<div>Название картинки</div>"), {});
+        $(".full-size").append($("<input type='text' class='picname'>"), {});
+        $(".picname").val(jsonData[data].picture);
+        $("full-size").append($("<input type='file' value='Pfadf'>"))
+        $(".full-size").append($("<div>Описание</div>"), {});
+        $(".full-size").append($("<textarea class='gooddesc'></textarea>"), {});
+        $(".gooddesc").val(jsonData[data].description);
+        $(".full-size").append($("<div>Цена</div>"), {});
+        $(".full-size").append($("<input type='number' class='goodprice'>"), {});
+        $(".goodprice").val(jsonData[data].price);
+        $(".full-size").append($("<div>Наличие</div>"), {});
+        $(".full-size").append($("<input type='checkbox' class='goodavail'>"), {});
+        if (jsonData[data].availability === "1") {
+            $(".goodavail").attr('checked', true);
+        }
+        $(".full-size").append($("<button onclick='submitEdit(" + data + ")' class='good-btn'>Сохранить</button>"));
+    }
+
+    function submitEdit(data) {
+
+        if ($(".goodname").val() != undefined &&
+            $(".picname").val() != undefined &&
+            $(".gooddesc").val() != undefined &&
+            $(".goodprice").val() != undefined &&
+            $(".goodavail").is(":checked") != undefined) {
+
+            $.ajax({
+                type: "POST",
+                url: "catalog_handler.php",
+                data: {
+                    gid: jsonData[data].id,
+                    gname: $(".goodname").val(),
+                    gpic: $(".picname").val(),
+                    gdesc: $(".gooddesc").val(),
+                    gprice: $(".goodprice").val(),
+                    gavail: $(".goodavail").is(':checked'),
+                },
+                success: function(response) {
+                    console.log(response);
+                    $(".good-btn").text('Успех');
+                    window.location.href = 'catalog.php';
+                }
+            });
+        } else {
+            $(".good-btn").text('Заполните все поля!');
+        }
+
+    }
+
+
     function submitOrder(data) {
         console.log($("[name='phone']").val());
         console.log($("[name='amount']").val());
@@ -27,19 +171,30 @@ require_once('header.php');
             $("[name='amount']").val() == undefined ||
             $("[name='address']").val() == undefined) {
 
-            $("#orderform").append($("<div class='orderr price' style='color:red'>Данные указаны не верно!</div>"))
+            $(".error").remove();
+            $("#orderform").append($("<div class='orderr price error' style='color:red'>Данные указаны не верно!</div>"));
+
+        } else if (getCookie("just_bought")) {
+            $(".error").remove();
+            $(".success").remove();
+            $("#orderform").append($("<div class='orderr price error' style='color:red'>Нельзя совершать покупки слишком часто!</div>"));
         } else {
 
             $.ajax({
                 type: "POST",
                 url: "catalog_handler.php",
                 data: {
-                    goodid: jsonData[data].id
+                    goodid: jsonData[data].id,
+                    phone: $("[name='phone']").val(),
+                    amount: $("[name='amount']").val(),
+                    adress: $("[name='address']").val(),
                 },
                 success: function(response) {
                     if (response) {
-                        $("#orderform").append($("<div>Успех! Ожидайте звонка оператора.</div>"));
+                        $(".error").remove();
+                        $("#orderform").append($("<div class='success'>Успех! Ожидайте звонка оператора.</div>"));
                     } else {
+                        $(".error").remove();
                         $("#orderform").append($("<div>Неудача, попробуйте позже или братитесь по горячей линии!</div>"));
                     }
                     console.log(res);
@@ -69,6 +224,7 @@ require_once('header.php');
 
         $(".goods").empty();
         $(".goods").append($("<div class='full-size'>"), {})
+        $(".full-size").append($("<button class='back' onclick='getList()'>Назад</button>"))
         $(".full-size").append($("<h2>"), {});
         $(".full-size h2").text(jsonData[data].lable);
         $(".full-size").append($("<img src='/FurWorks/goods/" + jsonData[data].picture + "'>"), {});
@@ -102,8 +258,16 @@ require_once('header.php');
             success: function(response) {
                 jsonData = JSON.parse(response);
                 document.getElementById("goods").innerHTML = "";
-                for (let i = 0; i < jsonData.length; ++i) {
-                    document.getElementById("goods").innerHTML += "<div data-num='" + i + "' data-label='" + jsonData[i].lable + "' data-description='" + jsonData[i].description + "' data-availability='" + jsonData[i].availability + "' data-pic='" + jsonData[i].pic + "' onclick='focusGood(" + i + ");'  class='good'  id='" + i + "'><img src='/FurWorks/goods/" + jsonData[i].picture + "' alt='pic'<p>" + jsonData[i].lable + "</p><button  class='good-btn'>Подробнее</button></div>";
+                if (getCookie('is_admin')) {
+                    document.getElementById("goods").innerHTML += "<input type='button' class='create' onclick='createGood()' value='Создать товар'>";
+                    document.getElementById("goods").innerHTML += "<input type='button' class='create' onclick='checkOrders()' value='Посмотреть заказы'>";
+                    for (let i = 0; i < jsonData.length; ++i) {
+                        document.getElementById("goods").innerHTML += "<div data-num='" + i + "' data-label='" + jsonData[i].lable + "' data-description='" + jsonData[i].description + "' data-availability='" + jsonData[i].availability + "' data-pic='" + jsonData[i].pic + "' onclick='editGood(" + i + ");'  class='good'  id='" + i + "'><img src='/FurWorks/goods/" + jsonData[i].picture + "' alt='pic'<p>" + jsonData[i].lable + "</p><button  class='good-btn'>Редактировать</button></div>";
+                    }
+                } else {
+                    for (let i = 0; i < jsonData.length; ++i) {
+                        document.getElementById("goods").innerHTML += "<div data-num='" + i + "' data-label='" + jsonData[i].lable + "' data-description='" + jsonData[i].description + "' data-availability='" + jsonData[i].availability + "' data-pic='" + jsonData[i].pic + "' onclick='focusGood(" + i + ");'  class='good'  id='" + i + "'><img src='/FurWorks/goods/" + jsonData[i].picture + "' alt='pic'<p>" + jsonData[i].lable + "</p><button  class='good-btn'>Подробнее</button></div>";
+                    }
                 }
 
             }
@@ -118,6 +282,10 @@ require_once('header.php');
 </script>
 
 <style>
+    .create {
+        font-size: 1.2em;
+    }
+
     .goods {
         display: flex;
         flex-flow: wrap row;
@@ -138,6 +306,10 @@ require_once('header.php');
         max-width: 300px;
     }
 
+    .gooddesc {
+        width: 100%;
+        height: 4em;
+    }
 
     .goods img {
         border-radius: 20px;
@@ -151,6 +323,14 @@ require_once('header.php');
         width: 100%
     }
 
+    .back {
+        font-size: 1em;
+        border-radius: 20px;
+        height: auto;
+        padding: 10px;
+        width: 30%
+    }
+
     .good-btn:focus {
         outline: none;
     }
@@ -158,7 +338,7 @@ require_once('header.php');
     .full-size {
         width: 80%;
         margin: 20px;
-        padding: 20px 20px 0 20px;
+        padding: 0 20px 0 20px;
         display: flex;
         flex-flow: nowrap column;
         align-items: center;
@@ -195,6 +375,12 @@ require_once('header.php');
         color: #422371;
         font-style: italic;
 
+    }
+
+    .order {
+        width: 100%;
+        border: 1px dashed black;
+        margin: 10px;
     }
 
     input {
