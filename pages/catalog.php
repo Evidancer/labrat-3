@@ -116,6 +116,9 @@ setcookie("cur_page", 'catalog', time() + 3600);
         $(".full-size").append($("<div>Название картинки</div>"), {});
         $(".full-size").append($("<input type='text' class='picname'>"), {});
         $(".picname").val(jsonData[data].picture);
+        $(".full-size").append($("<div>Загрузить картинку</div>"), {}); ////////////////////
+        $(".full-size").append($("<form class='imga' name='pic' action='catalog_handler.php' enctype='multipart/form-data' method='POST'>" +
+            "<input type='hidden' name='MAX_FILE_SIZE' value='30000000' /><input name='pic' type='file'></form>")) ////////////////////
         $("full-size").append($("<input type='file' value='Pfadf'>"))
         $(".full-size").append($("<div>Описание</div>"), {});
         $(".full-size").append($("<textarea class='gooddesc'></textarea>"), {});
@@ -148,12 +151,12 @@ setcookie("cur_page", 'catalog', time() + 3600);
                     gpic: $(".picname").val(),
                     gdesc: $(".gooddesc").val(),
                     gprice: $(".goodprice").val(),
-                    gavail: $(".goodavail").is(':checked'),
+                    gavail: $(".goodavail").is(':checked') + 0,
                 },
                 success: function(response) {
                     console.log(response);
                     $(".good-btn").text('Успех');
-                    window.location.href = 'catalog.php';
+                    $(".imga").submit();
                 }
             });
         } else {

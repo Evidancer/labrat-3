@@ -87,7 +87,10 @@ if (isset($_POST['page'])) {
 
     $sql->close();
     echo json_encode($arr);
-} else {
+} else if (isset($_FILES['pic'])) {
 
-    echo json_encode(array("bobik" => 22));
+    move_uploaded_file($_FILES['pic']['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . "/FurWorks/goods/" . basename($_FILES['pic']['name']));
+    header('Location: catalog.php');
+} else {
+    header('Location: catalog.php');
 }

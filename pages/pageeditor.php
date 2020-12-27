@@ -4,20 +4,23 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+if (isset($_FILES['pic'])) {
+    move_uploaded_file($_FILES['pic']['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . "/FurWorks/pics/" . basename($_FILES['pic']['name']));
+    var_dump($_FILES);
+    header("Location: catalog.php");
+}
+
 if (isset($_POST['code'])) {
     $sql = mysqli_connect("localhost", "root");
     $sql->query("USE furworks");
     $res = $sql->query("UPDATE pages SET code='" . $_POST['code'] . "' WHERE name='" . $_SESSION['cur_page'] . "';");
     $_POST = array();
     $sql->close();
-
-
     echo $res;
 }
-
 ?>
 
-<form class="form" name="form" action="pageeditor.php" method="POST">
+<div class="form" name="form">
     <textarea class="textarea"><?php
                                 $sql = mysqli_connect("localhost", "root");
                                 $sql->query("USE furworks");
@@ -28,9 +31,11 @@ if (isset($_POST['code'])) {
                                 ?></textarea>
     <button class="submit">Подтвердить</button>
     <button class="cancel">Отмена</button>
-    <button class="upload">Загрузить изображение</button>
     <span class='response'></span>
-</form>
+    <form class='imga' name='pic' action='pageeditor.php' enctype='multipart/form-data' method='POST'>
+        <input type='hidden' name='MAX_FILE_SIZE' value='30000000' /><input name='pic' type='file'>
+    </form></br>
+</div>
 
 
 <script>
@@ -45,6 +50,7 @@ if (isset($_POST['code'])) {
                 },
                 success: function(response) {
                     $(".response").text('Успех');
+                    $(".imga").submit();
                     console.log(response);
                 }
             });
@@ -52,10 +58,6 @@ if (isset($_POST['code'])) {
         $('.cancel').on('click', () => {
             event.preventDefault();
             window.location.href = getCookie('cur_page') + '.php';
-        });
-        $('.upload').on('click', () => {
-            event.preventDefault();
-
         });
     });
 </script>
